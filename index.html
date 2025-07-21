@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DEV'S Assistant</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ffcc;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 3px solid #00ffff;
+      box-shadow: 0 0 30px cyan;
+    }
+
+    h1 {
+      font-size: 30px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    #output {
+      font-size: 20px;
+      margin: 20px;
+      padding: 20px;
+      border: 1px dashed #0ff;
+      width: 80%;
+      height: 150px;
+      overflow-y: auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      background: #0ff;
+      color: black;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 0 15px #0ff;
+    }
+
+    button:hover {
+      background: #00cccc;
+    }
+
+    .glitch {
+      font-size: 20px;
+      color: #00ffcc;
+      text-shadow: 2px 0 red, -2px 0 blue;
+    }
+  </style>
+</head>
+<body>
+  <img src="circle-logo.png" alt="DEV Logo" class="logo" />
+  <h1>🎙️ DEV'S Assistant</h1>
+  <div id="output" class="glitch">Press 'Speak' and talk to me!</div>
+  <button onclick="startListening()">🎤 Speak</button>
+
+  <script>
+    const output = document.getElementById('output');
+    const synth = window.speechSynthesis;
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'hi-IN';
+
+    const amitabhVoiceSim = (text) => {
+      const utter = new SpeechSynthesisUtterance();
+      utter.text = text;
+      utter.lang = 'hi-IN';
+      utter.pitch = 0.4; // Deep like Amitabh
+      utter.rate = 0.85;
+      utter.volume = 1;
+      synth.speak(utter);
+    };
+
+    function startListening() {
+      if (!navigator.mediaDevices) {
+        output.innerText = '🎤 Mic not supported in this browser.';
+        return;
+      }
+
+      recognition.start();
+      output.innerText = '🎧 Listening...';
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        output.innerHTML = `🗣️ You: ${transcript}`;
+
+        generateResponse(transcript);
+      };
+
+      recognition.onerror = function (event) {
+        output.innerHTML = '❌ Mic Error: ' + event.error + '<br>Mic allow zaroor kro browser settings se.';
+      };
+    }
+
+    function generateResponse(msg) {
+      let response = '';
+
+      msg = msg.toLowerCase();
+
+      if (msg.includes('kaise ho') || msg.includes('how are you')) {
+        response = 'Main ekdam badiya hoon, Dev! Tum kaise ho?';
+      } else if (msg.includes('naam')) {
+        response = 'Mera naam hai DEV ka Assistant – future se aaya hoon!';
+      } else if (msg.includes('time')) {
+        const now = new Date();
+        response = `Abhi ka samay hai ${now.getHours()} baje ${now.getMinutes()} minute.`;
+      } else if (msg.includes('joke')) {
+        response = 'Ek joke suno: Ek AI bola – main human ban gaya! Aur sab hans pade.';
+      } else {
+        response = 'Mujhe ye samajh nahi aaya, kuch aur poocho Dev Bhai!';
+      }
+
+      output.innerHTML += `<br>🤖 Assistant: ${response}`;
+      amitabhVoiceSim(response);
+    }
+  </script>
+</body>
+</html>
